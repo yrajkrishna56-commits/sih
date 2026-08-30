@@ -1,160 +1,108 @@
-# Privacy-Preserving Browser Agent — Phase 1
+# Privacy-Preserving Browser Agent (PPBA) 🛡️
 
-> Local page perception — extracts a structured, typed representation of a webpage entirely in-browser, with no AI and no network calls.
+> **Smart India Hackathon (SIH) Project** — A local-first, privacy-preserving browser agent extension (Manifest V3) that perceiving web pages, filters PII locally, enforces user authorization via cryptographic single-use tokens, and safely interacts with remote AI providers.
 
-## What This Does
+---
 
-A Chrome extension (Manifest V3) that:
+## 🌟 Architecture & Core Invariants
 
-- Runs a content script on any webpage
-- On demand (click "Analyze"), extracts a structured representation of the page's DOM
-- Displays the extraction results in a side panel UI
-- Lets you click any extracted element to highlight it on the live page
-- Does all of this with **zero network calls, zero backend, zero AI/ML**
-
-## Requirements
-
-- **Chrome 114+** (required for `chrome.sidePanel` API)
-- **Node.js 18+** (for building the extension)
-
-## Quick Start
-
-### 1. Install dependencies
-
-```bash
-npm install
+```
+[DOM / Page Elements] ── Phase 1 ──> PageRepresentation (shared/types.ts)
+                                           │ (joined by elementId)
+[PII Classification]  ── Phase 2 ──> PrivacyAnalysis (privacy/privacyTypes.ts)
+                                           │ (joined by elementId)
+[Task & Disclosure]   ── Phase 3 ──> DisclosurePlan / SanitizedContext (task/taskTypes.ts)
+                                           │
+[Network Firewall]    ── Phase 4 ──> TaskReasoningRequest / RawAIResponse (network/networkTypes.ts)
+                                           │
+[Action Gate + UI]    ── Phase 5 ──> ValidatedAction + Single-Use Token (action/actionTypes.ts, approvalStore.ts)
 ```
 
-### 2. Build the extension
+### 🔐 Verified Security Guarantees
+1. **Zero-PII Transmission:** Passwords, credit cards, passport numbers, and raw `.value` inputs NEVER cross the network boundary.
+2. **Single Fetch Point:** All network access is strictly confined to `src/network/networkClient.ts`. No hidden background telemetry.
+3. **Browser-as-Trust-Boundary:** Remote AI recommendations are strictly advisory. Un-disclosed or non-interactive elements are blocked by local Action Gate.
+4. **Mechanism-Enforced User Approval:** Proposed actions require explicit user approval backed by background single-use cryptographic UUID tokens (`ApprovalStore`).
+5. **Offline Visual Context:** Visual context is derived 100% offline from DOM bounding boxes (`x`, `y`, `width`, `height`), with sensitive regions masked locally.
 
-```bash
-npm run build
-```
+---
 
-This produces a `dist/` folder with the built extension.
-
-### 3. Load in Chrome
-
-1. Open `chrome://extensions`
-2. Enable **Developer mode** (top-right toggle)
-3. Click **Load unpacked**
-4. Select the `dist/` folder from this project
-5. The extension icon appears in your toolbar
-
-### 4. Launch the demo site
-
-```bash
-npm run demo
-```
-
-This serves the demo flight-booking site at `http://localhost:3000`. Open that URL in Chrome.
-
-### 5. Use the extension
-
-1. Navigate to the demo site (or any webpage)
-2. Click the extension icon (🛡️) to open the side panel
-3. Click **🔍 Analyze Current Page**
-4. Browse extracted elements in the inspector
-5. Click any element to highlight it on the live page
-
-## Project Structure
+## 📁 Repository Structure
 
 ```
 src/
-├── background/
-│   └── serviceWorker.ts        # Message router only
-├── content/
-│   ├── contentScript.ts        # Entry point, wires up message listener
-│   ├── domExtractor.ts         # Pure extraction logic
-│   ├── elementUtils.ts         # Visibility/clickability/ID helpers
-│   └── highlighter.ts          # Non-destructive highlight overlay
-├── sidepanel/
-│   ├── App.tsx                 # Main orchestrator
-│   ├── index.tsx               # React entry point
-│   ├── index.html              # Side panel HTML
-│   ├── components/
-│   │   ├── PageOverview.tsx    # Page title, URL, summary counts
-│   │   ├── ElementInspector.tsx # Scrollable element list with filters
-│   │   └── AnalyzeButton.tsx   # Analysis trigger button
-│   └── styles/
-│       └── panel.css           # Side panel styles
-├── shared/
-│   ├── types.ts                # PageRepresentation, PageElement
-│   ├── messages.ts             # Discriminated-union message contracts
-│   └── constants.ts            # Shared constants
-├── demo/
-│   └── flight-booking/         # Synthetic demo site
-│       ├── index.html
-│       ├── styles.css
-│       └── script.js
-└── manifest.json               # Manifest V3 configuration
+├── action/           # Phase 5: Action Gate & safety validators
+├── background/       # MV3 Service Worker & ApprovalStore token manager
+├── content/          # Content script, DOM extractor & highlighter overlay
+├── demo/             # Local demo flight-booking site (http://localhost:8080)
+├── network/          # Phase 4: Privacy firewall, network client & response validator
+├── privacy/          # Phase 2: PII detection engine, confidence scoring & pattern rules
+├── shared/           # Phase 1: Shared types, contracts & constants
+├── sidepanel/        # React side panel UI, TaskView & inspector
+├── task/             # Phase 3: Task analyzer, minimum disclosure policy & concept tagger
+└── vision/           # Phase 5: Local visual context builder & redactor
+server/               # Express mock AI server (http://localhost:3001)
 ```
 
-## Tech Stack
+---
 
-- **Manifest V3** (`manifest_version: 3`)
-- **TypeScript** (strict mode)
-- **Vite** + **@crxjs/vite-plugin** (MV3-aware bundling)
-- **React** (side panel UI only — content scripts are framework-free)
-- **chrome.sidePanel API** (Chrome 114+)
-- No backend, no database, no external API SDKs
+## 🚀 Quick Start & Local Execution
 
-## Data Flow
+### 1. Requirements
+- **Node.js 18+**
+- **Chrome 114+** (Manifest V3 Side Panel API)
 
-```
-Side Panel → Background → Content Script → domExtractor → PageRepresentation → Background → Side Panel
-```
-
-1. User clicks "Analyze Current Page"
-2. Side panel sends `ANALYZE_PAGE` message to background
-3. Background routes message to active tab's content script
-4. Content script runs `extractPageRepresentation()` (pure DOM traversal)
-5. Returns `PAGE_ANALYSIS_RESULT` with typed `PageRepresentation`
-6. Side panel renders the structured data
-
-For highlighting:
-```
-Side Panel → Background → Content Script → highlighter.ts
-```
-
-## Known Limitations (Phase 1)
-
-- **Element cap**: Maximum 1500 elements extracted per page (configurable in `src/shared/constants.ts`)
-- **Noise filtering**: Elements smaller than 4px² area are skipped
-- **Restricted pages**: Content scripts cannot run on `chrome://`, Chrome Web Store, PDF viewers, etc. — error state is shown instead
-- **Demo site**: Must be served locally (not opened as `file://` in some cases)
-
-## Security
-
-- **Zero network calls**: Verified by grepping built output for `fetch(`, `XMLHttpRequest`, and hardcoded URLs
-- **No innerHTML**: DOM extraction produces typed objects, never raw HTML
-- **No eval**: All code is statically bundled
-- **Non-destructive highlighting**: Overlays are injected as siblings, never mutate target elements
-- **Sensitive value masking**: Password-type inputs display `••••••••` in the inspector
-
-## Phase 2+ Extension Points
-
-The following are documented in `src/shared/types.ts` but not implemented:
-
-```ts
-// privacyClassification?: unknown;
-// sensitivity?: unknown;
-// disclosureDecision?: unknown;
-```
-
-## Development
-
+### 2. Install Dependencies & Build Extension
 ```bash
-# Type check
-npm run typecheck
+# Install root client dependencies
+npm install
 
-# Build
+# Install mock AI server dependencies
+cd server && npm install && cd ..
+
+# Build TypeScript & Vite extension bundle
 npm run build
-
-# Serve demo site
-npm run demo
 ```
 
-## License
+### 3. Load Extension in Chrome
+1. Open `chrome://extensions` in Chrome.
+2. Toggle **Developer mode** on (top-right).
+3. Click **Load unpacked** and select the generated `dist/` directory.
 
-Hackathon project — see LICENSE if present.
+### 4. Run Live Demo Environment
+```bash
+# Terminal 1: Serve flight booking demo site (http://localhost:8080)
+npm run demo
+
+# Terminal 2: Start mock AI server (http://localhost:3001)
+cd server && npm start
+```
+
+### 5. Execute Test Suite
+```bash
+# Run client test suite (242 tests)
+npm test
+
+# Run server test suite (7 tests)
+cd server && npm test
+```
+
+**Total Test Baseline:** **249/249 passing** (242 client + 7 server).
+
+---
+
+## 📜 Commands Reference
+
+| Command | Action |
+|---------|--------|
+| `npm run build` | TypeScript check + Vite bundle (`dist/`) |
+| `npm run test` | Run client unit & integration tests (`vitest run`) |
+| `npm run demo` | Serve flight booking site at `http://localhost:8080` |
+| `npm run typecheck` | Run `tsc --noEmit` check only |
+| `cd server && npm start` | Start mock AI server on `http://localhost:3001` |
+| `cd server && npm test` | Run backend schema & reasoning tests |
+
+---
+
+## 🛡️ License
+SIH Prototype — Confidential & Proprietary.
