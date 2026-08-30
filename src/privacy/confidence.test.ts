@@ -3,7 +3,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { scoreAndCombine, confidenceBand, luhnCheck, CONFIDENCE_HIGH, CONFIDENCE_MEDIUM, CONFIDENCE_LOW } from './confidence';
+import { scoreAndCombine, confidenceBand, CONFIDENCE_HIGH, CONFIDENCE_MEDIUM, CONFIDENCE_LOW } from './confidence';
+import { luhnCheck } from './rules/patternRules';
 import type { EvidenceSignal } from './privacyTypes';
 
 // ─── Luhn Algorithm ────────────────────────────────────────────────

@@ -12,7 +12,6 @@
 
 import type { PIIType, EvidenceSignal, PrivacyAssessment } from './privacyTypes';
 import { getSensitivity } from './sensitivity';
-export { luhnCheck } from './rules/patternRules';
 
 // ─── Weight Tiers (tunable constants) ──────────────────────────────
 
