@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyBook — Flight Booking Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- DEMO BANNER -->
+  <div class="demo-banner" role="banner">
+    ⚠️ <strong>DEMO WEBSITE — ALL DATA IS SYNTHETIC</strong> ⚠️
+  </div>
+
+  <!-- HEADER / NAV -->
+  <header class="site-header">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <a href="#" class="logo">✈️ SkyBook</a>
+      <div class="nav-links">
+        <a href="#search" class="nav-link">Flights</a>
+        <a href="#results" class="nav-link">Results</a>
+        <a href="#help" class="nav-link">Help</a>
+        <a href="#" class="nav-link">Sign In</a>
+      </div>
+    </nav>
+  </header>
+
+  <main role="main">
+    <!-- SEARCH SECTION -->
+    <section id="search" class="section search-section" aria-label="Flight Search">
+      <h1>Search Flights</h1>
+      <form id="searchForm" class="search-form" role="search" aria-label="Flight search form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fromCity">From</label>
+            <select id="fromCity" name="from" required>
+              <option value="Mumbai" selected>Mumbai (BOM)</option>
+              <option value="Delhi">Delhi (DEL)</option>
+              <option value="Bangalore">Bangalore (BLR)</option>
+              <option value="Chennai">Chennai (MAA)</option>
+              <option value="Kolkata">Kolkata (CCU)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="toCity">To</label>
+            <select id="toCity" name="to" required>
+              <option value="Delhi" selected>Delhi (DEL)</option>
+              <option value="Mumbai">Mumbai (BOM)</option>
+              <option value="Bangalore">Bangalore (BLR)</option>
+              <option value="Chennai">Chennai (MAA)</option>
+              <option value="Kolkata">Kolkata (CCU)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="travelDate">Date</label>
+            <input type="date" id="travelDate" name="date" required />
+          </div>
+          <div class="form-group">
+            <label for="passengers">Passengers</label>
+            <select id="passengers" name="passengers" required>
+              <option value="1" selected>1 Adult</option>
+              <option value="2">2 Adults</option>
+              <option value="3">3 Adults</option>
+              <option value="4">4 Adults</option>
+              <option value="1-1">1 Adult, 1 Child</option>
+              <option value="2-1">2 Adults, 1 Child</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cabinClass">Class</label>
+            <select id="cabinClass" name="cabin">
+              <option value="economy" selected>Economy</option>
+              <option value="premium_economy">Premium Economy</option>
+              <option value="business">Business</option>
+              <option value="first">First Class</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="searchBtn">Search Flights</button>
+      </form>
+    </section>
+
+    <!-- PASSENGER DETAILS SECTION -->
+    <section id="passenger" class="section passenger-section" aria-label="Passenger Details">
+      <h2>Passenger Details</h2>
+      <form id="passengerForm" class="passenger-form" aria-label="Passenger information form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="passengerName">Full Name</label>
+            <input type="text" id="passengerName" name="name" placeholder="As on ID proof" value="Rahul Sharma" required />
+          </div>
+          <div class="form-group">
+            <label for="passengerEmail">Email</label>
+            <input type="email" id="passengerEmail" name="email" placeholder="you@example.com" value="rahul.sharma@example.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="passengerPhone">Phone</label>
+            <input type="tel" id="passengerPhone" name="phone" placeholder="+91-XXXXXXXXXX" value="+91-90000-00000" required />
+          </div>
+          <div class="form-group">
+            <label for="passengerPassport">Passport Number</label>
+            <input type="text" id="passengerPassport" name="passport" placeholder="e.g. X0000000" value="X0000000" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="passengerDob">Date of Birth</label>
+            <input type="date" id="passengerDob" name="dob" value="1990-05-15" required />
+          </div>
+          <div class="form-group">
+            <label for="nationality">Nationality</label>
+            <select id="nationality" name="nationality">
+              <option value="IN" selected>Indian</option>
+              <option value="US">American</option>
+              <option value="UK">British</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- PAYMENT SECTION -->
+    <section id="payment" class="section payment-section" aria-label="Payment Details">
+      <h2>Payment Information</h2>
+      <form id="paymentForm" class="payment-form" aria-label="Payment form">
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX" value="4242 4242 4242 4242" maxlength="19" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardName">Cardholder Name</label>
+            <input type="text" id="cardName" name="cardName" placeholder="Name on card" value="RAHUL SHARMA" required />
+          </div>
+          <div class="form-group">
+            <label for="cardExpiry">Expiry Date</label>
+            <input type="text" id="cardExpiry" name="expiry" placeholder="MM/YY" value="12/28" maxlength="5" required />
+          </div>
+          <div class="form-group">
+            <label for="cardCvv">CVV</label>
+            <input type="password" id="cardCvv" name="cvv" placeholder="***" maxlength="4" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="billingAddress">Billing Address</label>
+          <textarea id="billingAddress" name="address" rows="2" placeholder="Enter billing address">123 Marine Drive, Mumbai, Maharashtra 400001</textarea>
+        </div>
+      </form>
+    </section>
+
+    <!-- FLIGHT RESULTS SECTION -->
+    <section id="results" class="section results-section" aria-label="Flight Results">
+      <h2>Available Flights</h2>
+      <div class="results-sort">
+        <label for="sortBy">Sort by:</label>
+        <select id="sortBy" name="sort">
+          <option value="price" selected>Price (Low to High)</option>
+          <option value="duration">Duration (Shortest)</option>
+          <option value="departure">Departure Time</option>
+        </select>
+      </div>
+
+      <div class="flight-results" role="list" aria-label="Flight result cards">
+        <!-- Flight Card 1 -->
+        <article class="flight-card" role="listitem" aria-label="Flight SB 101">
+          <div class="flight-header">
+            <span class="flight-id">SB 101</span>
+            <span class="airline">SkyBook Airways</span>
+            <span class="flight-type non-stop">Non-stop</span>
+          </div>
+          <div class="flight-times">
+            <div class="time-block">
+              <span class="time">06:30</span>
+              <span class="airport">BOM</span>
+            </div>
+            <div class="flight-duration">
+              <span class="duration">2h 15m</span>
+              <div class="duration-line"></div>
+            </div>
+            <div class="time-block">
+              <span class="time">08:45</span>
+              <span class="airport">DEL</span>
+            </div>
+          </div>
+          <div class="flight-details">
+            <span class="detail"> Airbus A320</span>
+            <span class="detail"> Economy</span>
+            <span class="detail"> ✅ Refundable</span>
+          </div>
+          <div class="flight-price">
+            <span class="price">₹4,250</span>
+            <button class="btn btn-select" data-flight="SB101" aria-label="Select flight SB 101">Select Flight</button>
+          </div>
+        </article>
+
+        <!-- Flight Card 2 -->
+        <article class="flight-card" role="listitem" aria-label="Flight AI 204">
+          <div class="flight-header">
+            <span class="flight-id">AI 204</span>
+            <span class="airline">Air India</span>
+            <span class="flight-type non-stop">Non-stop</span>
+          </div>
+          <div class="flight-times">
+            <div class="time-block">
+              <span class="time">09:15</span>
+              <span class="airport">BOM</span>
+            </div>
+            <div class="flight-duration">
+              <span class="duration">2h 20m</span>
+              <div class="duration-line"></div>
+            </div>
+            <div class="time-block">
+              <span class="time">11:35</span>
+              <span class="airport">DEL</span>
+            </div>
+          </div>
+          <div class="flight-details">
+            <span class="detail"> Boeing 787</span>
+            <span class="detail"> Premium Economy</span>
+            <span class="detail"> ✅ Refundable</span>
+          </div>
+          <div class="flight-price">
+            <span class="price">₹6,800</span>
+            <button class="btn btn-select" data-flight="AI204" aria-label="Select flight AI 204">Select Flight</button>
+          </div>
+        </article>
+
+        <!-- Flight Card 3 -->
+        <article class="flight-card" role="listitem" aria-label="Flight 6E 305">
+          <div class="flight-header">
+            <span class="flight-id">6E 305</span>
+            <span class="airline">IndiGo</span>
+            <span class="flight-type non-stop">Non-stop</span>
+          </div>
+          <div class="flight-times">
+            <div class="time-block">
+              <span class="time">14:00</span>
+              <span class="airport">BOM</span>
+            </div>
+            <div class="flight-duration">
+              <span class="duration">2h 10m</span>
+              <div class="duration-line"></div>
+            </div>
+            <div class="time-block">
+              <span class="time">16:10</span>
+              <span class="airport">DEL</span>
+            </div>
+          </div>
+          <div class="flight-details">
+            <span class="detail"> Airbus A321neo</span>
+            <span class="detail"> Economy</span>
+            <span class="detail"> ❌ Non-refundable</span>
+          </div>
+          <div class="flight-price">
+            <span class="price">₹3,999</span>
+            <button class="btn btn-select" data-flight="6E305" aria-label="Select flight 6E 305">Select Flight</button>
+          </div>
+        </article>
+
+        <!-- Flight Card 4 (partially hidden section to test extractor) -->
+        <article class="flight-card" role="listitem" aria-label="Flight SG 410" aria-disabled="true">
+          <div class="flight-header">
+            <span class="flight-id">SG 410</span>
+            <span class="airline">SpiceJet</span>
+            <span class="flight-type with-stop">1 Stop</span>
+          </div>
+          <div class="flight-times">
+            <div class="time-block">
+              <span class="time">18:30</span>
+              <span class="airport">BOM</span>
+            </div>
+            <div class="flight-duration">
+              <span class="duration">5h 45m</span>
+              <div class="duration-line"></div>
+            </div>
+            <div class="time-block">
+              <span class="time">00:15+1</span>
+              <span class="airport">DEL</span>
+            </div>
+          </div>
+          <div class="flight-details">
+            <span class="detail"> Boeing 737</span>
+            <span class="detail"> Economy</span>
+            <span class="detail"> ✅ Refundable</span>
+          </div>
+          <div class="flight-price">
+            <span class="price">₹3,500</span>
+            <button class="btn btn-select" disabled data-flight="SG410" aria-label="Select flight SG 410 (sold out)">Select Flight</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- HIDDEN SECTION (tests extractor handling of hidden elements) -->
+    <section id="hiddenSection" class="section" style="display: none;" aria-label="Hidden content">
+      <h2>Hidden Section</h2>
+      <p>This section is hidden and should still be captured with visible: false</p>
+      <input type="text" id="hiddenInput" placeholder="Hidden input" value="secret-123" />
+      <button class="btn" id="hiddenBtn">Hidden Button</button>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer" role="contentinfo">
+      <p>© 2026 SkyBook Airways — Demo only. No real flights available.</p>
+      <div class="footer-links">
+        <a href="#terms">Terms</a>
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#contact">Contact Us</a>
+      </div>
+      <p class="disclaimer">
+        <strong>Disclaimer:</strong> This is a demonstration website for testing browser automation.
+        All data is entirely synthetic and fictional. No real bookings are processed.
+      </p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
