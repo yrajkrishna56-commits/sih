@@ -189,4 +189,36 @@ describe('responseValidator', () => {
       }).toThrow('unknown elementId');
     });
   });
+
+  describe('Phase 5 action types', () => {
+    it('accepts CLICK action type (Phase 5 regression)', () => {
+      const requestId = '12345678-1234-4123-8123-123456789abc';
+      const response = {
+        ...makeValidResponse(requestId),
+        proposedActions: [
+          { type: 'CLICK' as const, elementId: 'select-btn-1' },
+        ],
+      };
+      const disclosedIds = new Set(['price-1', 'price-2', 'airline-1', 'flight-1', 'select-btn-1']);
+      const pageRep = makePageRepresentation();
+
+      const approved = validateResponse(response, requestId, disclosedIds, pageRep);
+      expect(approved.proposedActions[0]!.type).toBe('CLICK');
+    });
+
+    it('accepts SCROLL action type (Phase 5 regression)', () => {
+      const requestId = '12345678-1234-4123-8123-123456789abc';
+      const response = {
+        ...makeValidResponse(requestId),
+        proposedActions: [
+          { type: 'SCROLL' as const, elementId: 'select-btn-1' },
+        ],
+      };
+      const disclosedIds = new Set(['price-1', 'price-2', 'airline-1', 'flight-1', 'select-btn-1']);
+      const pageRep = makePageRepresentation();
+
+      const approved = validateResponse(response, requestId, disclosedIds, pageRep);
+      expect(approved.proposedActions[0]!.type).toBe('SCROLL');
+    });
+  });
 });

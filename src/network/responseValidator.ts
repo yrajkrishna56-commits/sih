@@ -85,7 +85,7 @@ export function validateResponse(
 
   // 5. Check proposedActions[].type is valid (zod enum handles this, but add explicit check)
   for (const action of response.proposedActions) {
-    const validTypes = ['SELECT_ELEMENT', 'CLICK_TARGET', 'SCROLL_TARGET'];
+    const validTypes = ['SELECT_ELEMENT', 'CLICK_TARGET', 'SCROLL_TARGET', 'CLICK', 'SCROLL'];
     if (!validTypes.includes(action.type)) {
       throw new Error(
         `Unknown proposedActions type "${action.type}". Valid types: ${validTypes.join(', ')}.`

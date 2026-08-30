@@ -48,6 +48,8 @@ interface TaskViewState {
   validatedAction: ValidatedAction | null;
   actionResult: ActionResult | null;
   errorMessage: string | null;
+  /** Single-use approval token from background, required for EXECUTE_ACTION */
+  approvalToken: string | null;
 }
 
 const INITIAL_STATE: TaskViewState = {
@@ -59,6 +61,7 @@ const INITIAL_STATE: TaskViewState = {
   validatedAction: null,
   actionResult: null,
   errorMessage: null,
+  approvalToken: null,
 };
 
 export function TaskView({
@@ -102,6 +105,7 @@ export function TaskView({
       validatedAction: null,
       actionResult: null,
       errorMessage: null,
+      approvalToken: null,
     });
   }, [taskText, elements, analysis]);
 
@@ -127,6 +131,7 @@ export function TaskView({
       if (response && typeof response === 'object' && 'type' in response) {
         if (response.type === 'AI_RESPONSE') {
           const proposal = response.response as ApprovedProposal;
+          const approvalToken = (response as { approvalToken?: string }).approvalToken ?? null;
 
           // Action Gate: validate proposed actions
           if (proposal.proposedActions.length > 0 && state.context) {
@@ -159,6 +164,7 @@ export function TaskView({
                 status: 'action-pending',
                 proposal,
                 validatedAction: validation.action ?? null,
+                approvalToken,
               }));
               return;
             } else {
@@ -207,10 +213,11 @@ export function TaskView({
         approved: true,
       };
 
-      // Send to content script for execution
+      // Send to content script for execution (with approval token)
       const response = await chrome.runtime.sendMessage({
         type: 'EXECUTE_ACTION',
         action: approvedAction,
+        approvalToken: state.approvalToken,
       });
 
       if (response && typeof response === 'object' && 'type' in response) {

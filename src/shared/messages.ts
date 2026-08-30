@@ -16,7 +16,7 @@ export type ExtensionMessage =
   | { type: 'ANALYZE_TASK'; taskText: string }
   | { type: 'TASK_ANALYSIS_RESULT'; taskText: string }
   | { type: 'SEND_TO_AI'; sanitizedContext: unknown; taskAnalysis: unknown }
-  | { type: 'AI_RESPONSE'; response: unknown }
-  | { type: 'EXECUTE_ACTION'; action: unknown }
+  | { type: 'AI_RESPONSE'; response: unknown; approvalToken?: string }
+  | { type: 'EXECUTE_ACTION'; action: unknown; approvalToken?: string }
   | { type: 'ACTION_RESULT'; result: unknown }
   | { type: 'ERROR'; message: string; context?: string };
